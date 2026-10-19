@@ -180,30 +180,8 @@ setTimeout(function () {
 });
 
 displayAssignments();
-const viewAllButton = document.getElementById("viewAllButton");
-const allAssignments = document.getElementById("allAssignments");
-const allAssignmentsList = document.getElementById("allAssignmentsList");
 
-viewAllButton.addEventListener("click", function () {
-    allAssignments.style.display =
-        allAssignments.style.display === "none" ? "block" : "none";
-
-    allAssignmentsList.innerHTML = "";
-
-    assignments.forEach(function (assignment) {
-        const item = document.createElement("p");
-
-        item.textContent =
-            assignment.name +
-            " | Subject: " + assignment.subject +
-            " | Due: " + assignment.date +
-            " | Status: " +
-            (assignment.completed ? "Completed" : "Pending");
-
-        allAssignmentsList.appendChild(item);
-    });
-});
-
+           
 
 
 
