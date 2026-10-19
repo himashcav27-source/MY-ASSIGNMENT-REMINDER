@@ -1,57 +1,42 @@
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MIT Assignment Reminder</title>
     <link rel="stylesheet" href="style.css">
-    
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
     <h1>My Assignment Reminder</h1>
     <p class="tagline">Never miss an assignment deadline!</p>
-    <button type="button"
-    onclick="window.location.href='assignments.html'">
-    View All Assignments
-</button>
 
-
-
-
-
-
-<div class="resource-buttons">
-
-    <button type="button"
-        onclick="window.open('./tt.png.jpg', '_blank')">
-        📅 Timetable
+    <button type="button" onclick="window.location.href='assignments.html'">
+        View All Assignments
     </button>
 
-    <button type="button"
-        onclick="window.open('https://drive.google.com/drive/folders/1PIX3sTrXXQq_VYHGAOUxUa72laPbBHL8', '_blank')">
-        📚 Model Papers
-    </button>
+    <div class="resource-buttons">
+        <button type="button" onclick="window.open('./tt.png.jpg', '_blank')">
+            📅 Timetable
+        </button>
 
-    <button type="button"
-        onclick="window.open('./portions.pdf.pdf', '_blank')">
-        📘 Academic Syllabus
-    </button>
+        <button type="button" onclick="window.open('https://drive.google.com/drive/folders/1PIX3sTrXXQq_VYHGAOUxUa72laPbBHL8', '_blank')">
+            📚 Model Papers
+        </button>
 
-</div>
-
-
-
-
-
-
-
-    
+        <button type="button" onclick="window.open('./portions.pdf.pdf', '_blank')">
+            📘 Academic Syllabus
+        </button>
+    </div>
 
     <h2>Add a New Assignment</h2>
 
-    <form>
+    <div id="assignmentList"></div>
+
+    <form id="assignmentForm">
         <label for="subject">Choose Subject:</label>
 
         <select id="subject" name="subject">
@@ -91,265 +76,176 @@
 
         <button type="submit">Add Assignment</button>
     </form>
+
     <p id="successMessage" style="color: green; text-align: center; font-weight: bold;"></p>
-    
 
-<script>
-    
+    <button type="button" id="enableNotifications">
+        Enable Notifications 🔔
+    </button>
 
-const form = document.querySelector("form");
-const assignmentList = document.createElement("div");
-assignmentList.id = "assignmentList";
-form.insertAdjacentElement("beforebegin", assignmentList);
+    <script>
+        // Supabase initialization (no login form)
+        const SUPABASE_URL = "https://rgmwjfjgdgrgselqmwko.supabase.co";
 
-let assignments = JSON.parse(localStorage.getItem("assignments")) || [];
+        // Replace the placeholder with your existing Supabase
+        // publishable key from your previous code.
+        const SUPABASE_PUBLISHABLE_KEY = "PASTE_YOUR_EXISTING_PUBLISHABLE_KEY_HERE";
 
-function saveAssignments() {
-    localStorage.setItem("assignments", JSON.stringify(assignments));
-}
+        const supabaseClient = window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_PUBLISHABLE_KEY
+        );
 
-function displayAssignments() {
-    assignmentList.innerHTML = "";
+        console.log("Supabase client initialized!");
 
-    assignments.forEach(function(assignment, index) {
-        const card = document.createElement("div");
-        const heading = document.createElement("h3");
-        const details = document.createElement("p");
-        const completeButton = document.createElement("button");
+        // Register the service worker
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", function () {
+                navigator.serviceWorker
+                    .register("./service-worker.js")
+                    .then(function () {
+                        console.log("Service worker registered!");
+                    })
+                    .catch(function (error) {
+                        console.error(
+                            "Service worker registration failed:",
+                            error
+                        );
+                    });
+            });
+        }
 
-        heading.textContent = assignment.name +
-            (assignment.completed ? " (Completed)" : "");
+        // Load existing assignments from localStorage
+        const form = document.getElementById("assignmentForm");
+        const assignmentList = document.getElementById("assignmentList");
+        const successMessage = document.getElementById("successMessage");
 
-        details.textContent =
-            "Subject: " + assignment.subject +
-            " | Due: " + assignment.date;
+        let assignments = JSON.parse(
+            localStorage.getItem("assignments")
+        ) || [];
 
-        card.appendChild(heading);
-        card.appendChild(details);
+        function saveAssignments() {
+            localStorage.setItem(
+                "assignments",
+                JSON.stringify(assignments)
+            );
+        }
 
-        if (!assignment.completed) {
-            completeButton.textContent = "Mark Completed";
+        function displayAssignments() {
+            assignmentList.innerHTML = "";
 
-            completeButton.addEventListener("click", function() {
-                assignments[index].completed = true;
-                saveAssignments();
-                displayAssignments();
+            assignments.forEach(function (assignment, index) {
+                const card = document.createElement("div");
+                card.className = "assignment-card";
+
+                const heading = document.createElement("h3");
+                const details = document.createElement("p");
+                const status = document.createElement("p");
+
+                heading.textContent = assignment.name +
+                    (assignment.completed ? " (Completed)" : "");
+
+                details.textContent =
+                    "Subject: " + assignment.subject +
+                    " | Due: " + assignment.date;
+
+                status.textContent = assignment.completed
+                    ? "Status: Completed ✓"
+                    : "Status: Pending";
+
+                status.className = assignment.completed
+                    ? "status-completed"
+                    : "status-pending";
+
+                card.appendChild(heading);
+                card.appendChild(details);
+                card.appendChild(status);
+
+                if (!assignment.completed) {
+                    const completeButton = document.createElement("button");
+                    completeButton.textContent = "✓ Mark Completed";
+                    completeButton.type = "button";
+
+                    completeButton.addEventListener("click", function () {
+                        assignments[index].completed = true;
+                        saveAssignments();
+                        displayAssignments();
+                    });
+
+                    card.appendChild(completeButton);
+                }
+
+                const deleteButton = document.createElement("button");
+                deleteButton.textContent = "🗑️ Delete";
+                deleteButton.type = "button";
+
+                deleteButton.addEventListener("click", function () {
+                    if (confirm("Are you sure you want to delete this assignment?")) {
+                        assignments.splice(index, 1);
+                        saveAssignments();
+                        displayAssignments();
+                    }
+                });
+
+                card.appendChild(deleteButton);
+                assignmentList.appendChild(card);
+            });
+        }
+
+        // Add an assignment
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const subject = document.getElementById("subject").value;
+            const name = document.getElementById("assignment").value.trim();
+            const date = document.getElementById("deadline").value;
+
+            if (!name || !date) {
+                alert("Enter the assignment name and date.");
+                return;
+            }
+
+            assignments.push({
+                subject: subject,
+                name: name,
+                date: date,
+                completed: false
             });
 
-            card.appendChild(completeButton);
-        }
+            saveAssignments();
+            displayAssignments();
+            form.reset();
 
-        assignmentList.appendChild(card);
-    });
-}
+            successMessage.textContent =
+                "✅ Assignment added successfully!";
 
-form.addEventListener("submit", function(event) {
-    event.preventDefault();
+            setTimeout(function () {
+                successMessage.textContent = "";
+            }, 3000);
+        });
 
-    const subject = document.getElementById("subject").value;
-    const name = document.getElementById("assignment").value.trim();
-    const date = document.getElementById("deadline").value;
+        // Request browser notification permission
+        document.getElementById("enableNotifications")
+            .addEventListener("click", async function () {
+                if (!("Notification" in window)) {
+                    alert("Notifications are not supported by this browser.");
+                    return;
+                }
 
-    if (name === "" || date === "") {
-        alert("Enter the assignment name and date.");
-        return;
-    }
+                let permission = Notification.permission;
 
-    assignments.push({
-        subject: subject,
-        name: name,
-        date: date,
-        completed: false
-    });
+                if (permission === "default") {
+                    permission = await Notification.requestPermission();
+                }
 
-    
-
-saveAssignments();
-form.reset();
-
-
-const successMessage = document.getElementById("successMessage");
-successMessage.style.color = "white";
-successMessage.textContent = "✅ Assignment added successfully!";
-
-setTimeout(function () {
-    successMessage.textContent = "";
-}, 3000);
-
-
-});
-
-displayAssignments();
-
-           
-
-
-
-</script>
-
-<script>
-if ("serviceWorker" in navigator) {
-    window.addEventListener("load", function () {
-        navigator.serviceWorker
-            .register("./service-worker.js")
-            .then(function () {
-                console.log("Service worker registered!");
-            })
-            .catch(function (error) {
-                console.error("Service worker registration failed:", error);
+                if (permission === "granted") {
+                    alert("Notifications are enabled! 💜");
+                } else {
+                    alert("Please allow notifications in your browser settings.");
+                }
             });
-    });
-}
-</script>
 
-<script>
-const SUPABASE_URL = "https://rgmwjfjgdgrgselqmwko.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_qYqQljM4abnJ_KNWO9ltoA_-1RkowxlS";
-
-const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY
-);
-
-console.log("Supabase client initialized!");
-</script>
-
-<div id="supabaseLoginBox">
-    <h2>Sign in to save your assignments</h2>
-
-    <form id="supabaseLoginForm">
-        <label for="loginEmail">Email:</label>
-        <input
-            type="email"
-            id="loginEmail"
-            required
-            placeholder="Enter your Supabase email"
-        >
-
-        <br><br>
-
-        <label for="loginPassword">Password:</label>
-        <input
-            type="password"
-            id="loginPassword"
-            required
-            placeholder="Enter your password"
-        >
-
-        <br><br>
-
-        <button type="submit">Sign In</button>
-    </form>
-
-    <p id="loginMessage"></p>
-</div>
-
-<script>
-document.getElementById("supabaseLoginForm")
-    .addEventListener("submit", async function(event) {
-        event.preventDefault();
-
-        const email = document.getElementById("loginEmail").value;
-        const password = document.getElementById("loginPassword").value;
-        const message = document.getElementById("loginMessage");
-
-        message.textContent = "Signing in...";
-
-        const { data, error } = await supabaseClient.auth
-            .signInWithPassword({ email, password });
-
-        if (error) {
-            message.textContent = "Sign-in failed. Check your email and password.";
-            console.error("Supabase sign-in error:", error.message);
-            return;
-        }
-
-        message.textContent = "Signed in successfully! 💜";
-        document.getElementById("supabaseLoginForm").reset();
-
-        console.log("Supabase session established.");
-    });
-</script>
-
-<div id="supabaseLoginBox">
-    <h2>Sign in to save your assignments</h2>
-
-    <form id="supabaseLoginForm">
-        <label for="loginEmail">Email:</label>
-        <input
-            type="email"
-            id="loginEmail"
-            required
-            placeholder="Enter your Supabase email"
-        >
-
-        <br><br>
-
-        <label for="loginPassword">Password:</label>
-        <input
-            type="password"
-            id="loginPassword"
-            required
-            placeholder="Enter your password"
-        >
-
-        <br><br>
-
-        <button type="submit">Sign In</button>
-    </form>
-
-    <p id="loginMessage"></p>
-</div>
-
-<script>
-document.getElementById("supabaseLoginForm")
-    .addEventListener("submit", async function(event) {
-        event.preventDefault();
-
-        const email = document.getElementById("himashcav27@gmail.com").value;
-        const password = document.getElementById("@$wELhIMA9$@").value;
-        const message = document.getElementById("loginMessage");
-
-        message.textContent = "Signing in...";
-
-        const { data, error } = await supabaseClient.auth
-            .signInWithPassword({ email, password });
-
-        if (error) {
-            message.textContent = "Sign-in failed. Check your email and password.";
-            console.error("Supabase sign-in error:", error.message);
-            return;
-        }
-
-        message.textContent = "Signed in successfully! 💜";
-        document.getElementById("supabaseLoginForm").reset();
-
-        console.log("Supabase session established.");
-    });
-</script>
-
-
-<button id="enableNotifications">Enable Notifications 🔔</button>
-
-
-<script>
-    document.getElementById("enableNotifications").addEventListener("click", async function () {
-    if (!("Notification" in window)) {
-        alert("Notifications are not supported by this browser.");
-        return;
-    }
-
-    const permission = await Notification.requestPermission();
-
-    if (permission === "granted") {
-        alert("Notifications enabled successfully! 💜");
-    } else {
-        alert("Notifications were not enabled. Please check your browser settings.");
-    }
-});
-
-</script>
-
+        displayAssignments();
+    </script>
 </body>
 </html>
-
