@@ -1,0 +1,206 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MIT Assignment Reminder</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1>My Assignment Reminder</h1>
+    <p class="tagline">Never miss an assignment deadline!</p>
+    <button type="button"
+    onclick="window.location.href='assignments.html'">
+    View All Assignments
+</button>
+
+
+
+
+
+
+<div class="resource-buttons">
+
+    <button type="button"
+        onclick="window.open('./tt.png.jpg', '_blank')">
+        📅 Timetable
+    </button>
+
+    <button type="button"
+        onclick="window.open('https://drive.google.com/drive/folders/1PIX3sTrXXQq_VYHGAOUxUa72laPbBHL8', '_blank')">
+        📚 Model Papers
+    </button>
+
+    <button type="button"
+        onclick="window.open('./portions.pdf.pdf', '_blank')">
+        📘 Academic Syllabus
+    </button>
+
+</div>
+
+
+
+
+
+
+
+    
+
+    <h2>Add a New Assignment</h2>
+
+    <form>
+        <label for="subject">Choose Subject:</label>
+
+        <select id="subject" name="subject">
+            <option>Mathematics</option>
+            <option>Physics</option>
+            <option>Mechanics</option>
+            <option>Makerspace</option>
+            <option>ED</option>
+            <option>Tamil</option>
+            <option>English</option>
+        </select>
+
+        <br><br>
+
+        <label for="assignment">Assignment Name:</label>
+
+        <input
+            type="text"
+            id="assignment"
+            name="assignment"
+            placeholder="Enter assignment name"
+            required
+        >
+
+        <br><br>
+
+        <label for="deadline">Submission Date:</label>
+
+        <input
+            type="date"
+            id="deadline"
+            name="deadline"
+            required
+        >
+
+        <br><br>
+
+        <button type="submit">Add Assignment</button>
+    </form>
+    <p id="successMessage" style="color: green; text-align: center; font-weight: bold;"></p>
+    
+
+<script>
+    
+
+const form = document.querySelector("form");
+const assignmentList = document.getElementById("assignmentList");
+
+let assignments = JSON.parse(localStorage.getItem("assignments")) || [];
+
+function saveAssignments() {
+    localStorage.setItem("assignments", JSON.stringify(assignments));
+}
+
+function displayAssignments() {
+    assignmentList.innerHTML = "";
+
+    assignments.forEach(function(assignment, index) {
+        const card = document.createElement("div");
+        const heading = document.createElement("h3");
+        const details = document.createElement("p");
+        const completeButton = document.createElement("button");
+
+        heading.textContent = assignment.name +
+            (assignment.completed ? " (Completed)" : "");
+
+        details.textContent =
+            "Subject: " + assignment.subject +
+            " | Due: " + assignment.date;
+
+        card.appendChild(heading);
+        card.appendChild(details);
+
+        if (!assignment.completed) {
+            completeButton.textContent = "Mark Completed";
+
+            completeButton.addEventListener("click", function() {
+                assignments[index].completed = true;
+                saveAssignments();
+                displayAssignments();
+            });
+
+            card.appendChild(completeButton);
+        }
+
+        assignmentList.appendChild(card);
+    });
+}
+
+form.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const subject = document.getElementById("subject").value;
+    const name = document.getElementById("assignment").value.trim();
+    const date = document.getElementById("deadline").value;
+
+    if (name === "" || date === "") {
+        alert("Enter the assignment name and date.");
+        return;
+    }
+
+    assignments.push({
+        subject: subject,
+        name: name,
+        date: date,
+        completed: false
+    });
+
+    
+
+saveAssignments();
+form.reset();
+
+
+const successMessage = document.getElementById("successMessage");
+successMessage.style.color = "white";
+successMessage.textContent = "✅ Assignment added successfully!";
+
+setTimeout(function () {
+    successMessage.textContent = "";
+}, 3000);
+
+
+});
+
+displayAssignments();
+const viewAllButton = document.getElementById("viewAllButton");
+const allAssignments = document.getElementById("allAssignments");
+const allAssignmentsList = document.getElementById("allAssignmentsList");
+
+viewAllButton.addEventListener("click", function () {
+    allAssignments.style.display =
+        allAssignments.style.display === "none" ? "block" : "none";
+
+    allAssignmentsList.innerHTML = "";
+
+    assignments.forEach(function (assignment) {
+        const item = document.createElement("p");
+
+        item.textContent =
+            assignment.name +
+            " | Subject: " + assignment.subject +
+            " | Due: " + assignment.date +
+            " | Status: " +
+            (assignment.completed ? "Completed" : "Pending");
+
+        allAssignmentsList.appendChild(item);
+    });
+});
+
+
+
+</script>
+</body>
+</html>

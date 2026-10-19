@@ -1,0 +1,272 @@
+
+/* ===== MIDNIGHT DREAM THEME ===== */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    padding: 30px 18px;
+    color: #ffffff;
+
+    /* Night-sky background image */
+    background-image:
+        linear-gradient(
+            rgba(8, 15, 53, 0.30),
+            rgba(20, 15, 55, 0.40)
+        ),
+        url("./night-sky.png.png");
+
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-color: #080f35;
+}
+
+/* Main heading */
+
+h1 {
+    text-align: center;
+    color: #fff1ff;
+    font-size: 36px;
+    margin: 15px 0 10px;
+    text-shadow: 0 3px 15px rgba(0, 0, 0, 0.45);
+    letter-spacing: 1px;
+}
+
+/* Section heading */
+
+h2 {
+    text-align: center;
+    color: #f1e4ff;
+    margin: 30px 0 20px;
+    font-size: 25px;
+}
+
+/* Assignment form */
+
+form {
+    background: rgba(255, 255, 255, 0.96);
+    color: #29224f;
+    padding: 28px;
+    border-radius: 22px;
+    max-width: 500px;
+    width: 100%;
+    margin: 28px auto;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.30);
+    border: 1px solid rgba(255, 255, 255, 0.75);
+}
+
+/* Form labels */
+
+label {
+    display: block;
+    font-weight: 600;
+    margin: 12px 0 8px;
+    color: #352b69;
+}
+
+/* Text boxes and dropdown */
+
+input,
+select {
+    display: block;
+    width: 100%;
+    padding: 13px;
+    margin: 8px 0 20px;
+    border: 1px solid #d9d0f3;
+    border-radius: 10px;
+    font-size: 15px;
+    font-family: inherit;
+    background: #ffffff;
+    color: #29224f;
+    outline: none;
+}
+
+input:focus,
+select:focus {
+    border-color: #9280e8;
+    box-shadow: 0 0 0 3px rgba(146, 128, 232, 0.18);
+}
+
+/* Buttons */
+
+button {
+    background: linear-gradient(135deg, #7168df, #a18be8);
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(113, 104, 223, 0.30);
+}
+
+/* Add Assignment button */
+
+form button {
+    display: block;
+    width: 100%;
+    margin-top: 5px;
+}
+
+/* Assignment cards container */
+
+#assignmentList {
+    max-width: 600px;
+    width: 100%;
+    margin: 20px auto;
+}
+
+/* Individual assignment cards */
+
+#assignmentList > div {
+    background: rgba(255, 255, 255, 0.97);
+    color: #29224f;
+    padding: 22px;
+    margin: 18px 0;
+    border-radius: 18px;
+    border-left: 6px solid #a18be8;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.22);
+    overflow-wrap: anywhere;
+}
+
+/* Assignment titles */
+
+#assignmentList h3 {
+    color: #493b91;
+    margin-top: 0;
+    font-size: 20px;
+}
+
+/* Assignment details */
+
+#assignmentList p {
+    color: #514b70;
+    line-height: 1.6;
+}
+
+/* Completed assignment button */
+
+#assignmentList button {
+    margin-top: 8px;
+    background: linear-gradient(135deg, #4b9b91, #6ab9a7);
+}
+
+/* Mobile-friendly layout */
+
+@media (max-width: 600px) {
+    body {
+        padding: 18px 12px;
+        background-attachment: scroll;
+    }
+
+    h1 {
+        font-size: 29px;
+    }
+
+    h2 {
+        font-size: 22px;
+    }
+
+    form {
+        padding: 22px 18px;
+        border-radius: 18px;
+    }
+
+    #assignmentList > div {
+        padding: 18px;
+    }
+}
+h1 {
+    font-weight: 900;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+.tagline {
+    text-align: center;
+    width: 100%;
+    display: block;
+    font-size: 20px;
+    font-weight: 600;
+    color: #bfc4d6;
+    text-shadow: none;
+    opacity: 0.8;
+    margin-top: 10px;
+    margin-bottom: 25px;
+}
+.assignment-card {
+    background-color: #e9ddff;
+    color: #30234a;
+    padding: 18px 22px;
+    margin: 15px auto;
+    border-radius: 15px;
+    max-width: 700px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid #d2bfff;
+}
+
+.assignment-card h3 {
+    color: #49336d;
+    margin-top: 0;
+}
+
+.assignment-card p {
+    color: #403456;
+    margin-bottom: 8px;
+}
+.status-completed {
+    color: #16803c !important;
+    font-weight: bold;
+}
+
+.status-pending {
+    color: #d62828 !important;
+    font-weight: bold;
+}
+
+.delete-button {
+    background-color: #e57373;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 10px;
+    margin-top: 12px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.delete-button:hover {
+    background-color: #d9534f;
+}
+
+
+.complete-button {
+    margin-right: 12px;
+}
+
+.delete-button {
+    margin-left: 12px;
+}
+
+
+.resource-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin: 15px 0;
+}
+
+.resource-buttons button {
+    margin: 0;
+}
