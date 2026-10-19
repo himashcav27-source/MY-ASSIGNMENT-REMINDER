@@ -214,6 +214,27 @@ const supabaseClient = window.supabase.createClient(
 console.log("Supabase client initialized!");
 </script>
 
+<button id="enableNotifications">Enable Notifications 🔔</button>
+
+
+<script>
+    document.getElementById("enableNotifications").addEventListener("click", async function () {
+    if (!("Notification" in window)) {
+        alert("Notifications are not supported by this browser.");
+        return;
+    }
+
+    const permission = await Notification.requestPermission();
+
+    if (permission === "granted") {
+        alert("Notifications enabled successfully! 💜");
+    } else {
+        alert("Notifications were not enabled. Please check your browser settings.");
+    }
+});
+
+</script>
+
 </body>
 </html>
 
