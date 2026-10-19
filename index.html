@@ -4,6 +4,9 @@
 <head>
     <title>MIT Assignment Reminder</title>
     <link rel="stylesheet" href="style.css">
+    
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 </head>
 
 <body>
@@ -95,7 +98,9 @@
     
 
 const form = document.querySelector("form");
-const assignmentList = document.getElementById("assignmentList");
+const assignmentList = document.createElement("div");
+assignmentList.id = "assignmentList";
+form.insertAdjacentElement("beforebegin", assignmentList);
 
 let assignments = JSON.parse(localStorage.getItem("assignments")) || [];
 
@@ -217,6 +222,18 @@ if ("serviceWorker" in navigator) {
             });
     });
 }
+</script>
+
+<script>
+const SUPABASE_URL = "https://rgmwjfjgdgrgselqmwko.supabase.co/rest/v1/";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_qYqQljM4abnJ_KNWO9ltoA_-1RkowxlS";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+);
+
+console.log("Supabase client initialized!");
 </script>
 
 </body>
