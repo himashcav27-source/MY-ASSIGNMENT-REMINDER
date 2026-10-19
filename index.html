@@ -214,6 +214,121 @@ const supabaseClient = window.supabase.createClient(
 console.log("Supabase client initialized!");
 </script>
 
+<div id="supabaseLoginBox">
+    <h2>Sign in to save your assignments</h2>
+
+    <form id="supabaseLoginForm">
+        <label for="loginEmail">Email:</label>
+        <input
+            type="email"
+            id="loginEmail"
+            required
+            placeholder="Enter your Supabase email"
+        >
+
+        <br><br>
+
+        <label for="loginPassword">Password:</label>
+        <input
+            type="password"
+            id="loginPassword"
+            required
+            placeholder="Enter your password"
+        >
+
+        <br><br>
+
+        <button type="submit">Sign In</button>
+    </form>
+
+    <p id="loginMessage"></p>
+</div>
+
+<script>
+document.getElementById("supabaseLoginForm")
+    .addEventListener("submit", async function(event) {
+        event.preventDefault();
+
+        const email = document.getElementById("loginEmail").value;
+        const password = document.getElementById("loginPassword").value;
+        const message = document.getElementById("loginMessage");
+
+        message.textContent = "Signing in...";
+
+        const { data, error } = await supabaseClient.auth
+            .signInWithPassword({ email, password });
+
+        if (error) {
+            message.textContent = "Sign-in failed. Check your email and password.";
+            console.error("Supabase sign-in error:", error.message);
+            return;
+        }
+
+        message.textContent = "Signed in successfully! 💜";
+        document.getElementById("supabaseLoginForm").reset();
+
+        console.log("Supabase session established.");
+    });
+</script>
+
+<div id="supabaseLoginBox">
+    <h2>Sign in to save your assignments</h2>
+
+    <form id="supabaseLoginForm">
+        <label for="loginEmail">Email:</label>
+        <input
+            type="email"
+            id="loginEmail"
+            required
+            placeholder="Enter your Supabase email"
+        >
+
+        <br><br>
+
+        <label for="loginPassword">Password:</label>
+        <input
+            type="password"
+            id="loginPassword"
+            required
+            placeholder="Enter your password"
+        >
+
+        <br><br>
+
+        <button type="submit">Sign In</button>
+    </form>
+
+    <p id="loginMessage"></p>
+</div>
+
+<script>
+document.getElementById("supabaseLoginForm")
+    .addEventListener("submit", async function(event) {
+        event.preventDefault();
+
+        const email = document.getElementById("himashcav27@gmail.com").value;
+        const password = document.getElementById("@$wELhIMA9$@").value;
+        const message = document.getElementById("loginMessage");
+
+        message.textContent = "Signing in...";
+
+        const { data, error } = await supabaseClient.auth
+            .signInWithPassword({ email, password });
+
+        if (error) {
+            message.textContent = "Sign-in failed. Check your email and password.";
+            console.error("Supabase sign-in error:", error.message);
+            return;
+        }
+
+        message.textContent = "Signed in successfully! 💜";
+        document.getElementById("supabaseLoginForm").reset();
+
+        console.log("Supabase session established.");
+    });
+</script>
+
+
 <button id="enableNotifications">Enable Notifications 🔔</button>
 
 
