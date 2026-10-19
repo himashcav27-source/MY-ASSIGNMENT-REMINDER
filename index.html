@@ -224,26 +224,47 @@
             }, 3000);
         });
 
-        // Request browser notification permission
-        document.getElementById("enableNotifications")
-            .addEventListener("click", async function () {
-                if (!("Notification" in window)) {
-                    alert("Notifications are not supported by this browser.");
-                    return;
-                }
+        // Enable and test a notification on this device
+document.getElementById("enableNotifications")
+    .addEventListener("click", async function () {
 
-                let permission = Notification.permission;
+        if (!("Notification" in window)) {
+            alert("Notifications are not supported in this browser.");
+            return;
+        }
 
-                if (permission === "default") {
-                    permission = await Notification.requestPermission();
-                }
+        let permission = Notification.permission;
 
-                if (permission === "granted") {
-                    alert("Notifications are enabled! 💜");
-                } else {
-                    alert("Please allow notifications in your browser settings.");
+        if (permission === "default") {
+            permission = await Notification.requestPermission();
+        }
+
+        if (permission !== "granted") {
+            alert("Please allow notifications in your browser settings.");
+            return;
+        }
+
+        if (!("serviceWorker" in navigator)) {
+            alert("Service workers are not supported.");
+            return;
+        }
+
+        try {
+            const registration =
+                await navigator.serviceWorker.ready;
+
+            await registration.showNotification(
+                "MIT Assignment Reminder 💜",
+                {
+                    body: "Test successful! Your phone can display a notification.",
+                    icon: "./tt.png.jpg"
                 }
-            });
+            );
+        } catch (error) {
+            console.error("Notification test failed:", error);
+            alert("Notification test failed. Please check the browser console.");
+        }
+    });
 
         displayAssignments();
     </script>
