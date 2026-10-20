@@ -89,7 +89,7 @@
 
         // Replace the placeholder with your existing Supabase
         // publishable key from your previous code.
-        const SUPABASE_PUBLISHABLE_KEY = "PASTE_YOUR_EXISTING_PUBLISHABLE_KEY_HERE";
+        const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_qYqQljM4abnJ_KNWO9ltoA_-1Rkowxl";
 
         const supabaseClient = window.supabase.createClient(
             SUPABASE_URL,
@@ -224,47 +224,87 @@
             }, 3000);
         });
 
-        // Enable and test a notification on this device
-document.getElementById("enableNotifications")
-    .addEventListener("click", async function () {
+        
+        // Register this device for real push notifications
+        function urlBase64ToUint8Array(base64String) {
+            const padding = "=".repeat((4 - base64String.length % 4) % 4);
+            const base64 = (base64String + padding)
+                .replace(/-/g, "+")
+                .replace(/_/g, "/");
 
-        if (!("Notification" in window)) {
-            alert("Notifications are not supported in this browser.");
-            return;
+            const raw = atob(base64);
+            return Uint8Array.from(raw, char => char.charCodeAt(0));
         }
 
-        let permission = Notification.permission;
+        document.getElementById("enableNotifications")
+            .addEventListener("click", async function () {
+                try {
+                    if (!("serviceWorker" in navigator) ||
+                        !("PushManager" in window) ||
+                        !("Notification" in window)) {
+                        alert("Push notifications are not supported here.");
+                        return;
+                    }
 
-        if (permission === "default") {
-            permission = await Notification.requestPermission();
-        }
+                    const permission = await Notification.requestPermission();
 
-        if (permission !== "granted") {
-            alert("Please allow notifications in your browser settings.");
-            return;
-        }
+                    if (permission !== "granted") {
+                        alert("Please allow notifications in browser settings.");
+                        return;
+                    }
 
-        if (!("serviceWorker" in navigator)) {
-            alert("Service workers are not supported.");
-            return;
-        }
+                    const registration = await navigator.serviceWorker.ready;
 
-        try {
-            const registration =
-                await navigator.serviceWorker.ready;
+                    // Paste your PUBLIC VAPID key from Supabase Secrets here.
+                    const vapidPublicKey = "5afb167b83920365a69a6c1a75bc2b4ff7a7d17fd14217b87468ec3a682020c1";
 
-            await registration.showNotification(
-                "MIT Assignment Reminder 💜",
-                {
-                    body: "Test successful! Your phone can display a notification.",
-                    icon: "./tt.png.jpg"
+                    if (vapidPublicKey.includes("PASTE_")) {
+                        alert("Add your public VAPID key in the code first.");
+                        return;
+                    }
+
+                    const subscription = await registration.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
+                    });
+
+                    // Enter the setup token when prompted; never hardcode it.
+                    const deviceToken = prompt(
+                        "Enter your private device setup token:"
+                    );
+
+                    if (!deviceToken) {
+                        alert("Registration cancelled.");
+                        return;
+                    }
+
+                    const response = await fetch(
+                        "https://rgmwjfjgdgrgselqmwko.supabase.co/functions/v1/send-assignment-reminders",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "x-device-token": deviceToken
+                            },
+                            body: JSON.stringify({
+                                subscription: subscription.toJSON()
+                            })
+                        }
+                    );
+
+                    const result = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(result.error || "Registration failed.");
+                    }
+
+                    alert("Push subscription registered successfully! 💜");
+                } catch (error) {
+                    console.error("Push registration failed:", error);
+                    alert("Registration failed: " + error.message);
                 }
-            );
-        } catch (error) {
-            console.error("Notification test failed:", error);
-            alert("Notification test failed. Please check the browser console.");
-        }
-    });
+            });
+
 
         displayAssignments();
     </script>
