@@ -85,7 +85,7 @@
 
     <script>
         // Supabase initialization (no login form)
-        const SUPABASE_URL = "https://rgmwjfjgdgrgselqmwko.supabase.co";
+        const SUPABASE_URL = "https://rgmwjfjgdgrgselqmwko.supabase.co/rest/v1/";
 
         // Replace the placeholder with your existing Supabase
         // publishable key from your previous code.
@@ -265,7 +265,7 @@
 
                     const subscription = await registration.pushManager.subscribe({
                         userVisibleOnly: true,
-                        applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
+                        applicationServerKey: urlBase64ToUint8Array("5afb167b83920365a69a6c1a75bc2b4ff7a7d17fd14217b87468ec3a682020c1")
                     });
 
                     // Enter the setup token when prompted; never hardcode it.
